@@ -92,12 +92,12 @@ public class PedroTest extends OpMode {
 
     @Override
     public void start() {
-        //schedule(autoRoutine());
+        //schedule(autoRoutine());        //uncomment this if not testing limelight
     }
 
     @Override
     public void loop() {
-        follower.update();
+        //follower.update();              //uncomment this if not testing limelight
 
         LLResult result = limelight.getLatestResult();
 
