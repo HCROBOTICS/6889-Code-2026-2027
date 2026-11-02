@@ -5,12 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.pedropathing.follower.Follower;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -37,8 +33,6 @@ import java.util.List;
 public class PedroTest extends OpMode {
     private Follower follower;
     Limelight3A limelight;
-    private VisionPortal visionPortal;
-    private AprilTagProcessor aprilTagProcessor;
     private final PoseFactory p = PoseFactory.degrees(); // (X, Y, heading in deg.)
 
     private final Pose startPose = p.of(8, 24, 180);
@@ -87,48 +81,63 @@ public class PedroTest extends OpMode {
         limelight.setPollRateHz(100);
         limelight.start();
         limelight.pipelineSwitch(6);
-        aprilTagProcessor = new AprilTagProcessor.Builder().build();
         //result.getPipeLineIndex()
 
         Servo leftServo = hardwareMap.get(Servo.class, "left servo");
         Servo rightServo = hardwareMap.get(Servo.class, "right servo");
         DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
 
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessor(aprilTagProcessor)
-                .build();
-
         //leftServo.setPosition(0);
     }
 
     @Override
     public void start() {
-        schedule(autoRoutine());
+        //schedule(autoRoutine());
     }
 
     @Override
     public void loop() {
         follower.update();
-        Scheduler.execute();
 
         LLResult result = limelight.getLatestResult();
 
+        telemetry.addData("Limelight Connected", limelight.isConnected());
+
         if (result != null && result.isValid()) {
+
+            telemetry.addData("Pipeline", result.getPipelineIndex());
+
             List<LLResultTypes.FiducialResult> fiducials =
                     result.getFiducialResults();
 
-            if (!fiducials.isEmpty()) {
-                for (LLResultTypes.FiducialResult fiducial : fiducials) {
-                    telemetry.addData("Detected Tag ID", fiducial.getFiducialId());
-                }
-            } else {
-                telemetry.addLine("No AprilTags detected by Limelight");
+            telemetry.addData("AprilTags Detected", fiducials.size());
+
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                telemetry.addData(
+                        "Tag ID",
+                        fiducial.getFiducialId()
+                );
+
+                telemetry.addData(
+                        "Target X",
+                        fiducial.getTargetXDegrees()
+                );
+
+                telemetry.addData(
+                        "Target Y",
+                        fiducial.getTargetYDegrees()
+                );
             }
+
         } else {
             telemetry.addLine("No valid Limelight result");
         }
 
         telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        limelight.stop();
     }
 }
