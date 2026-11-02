@@ -84,9 +84,9 @@ public class PedroTest extends OpMode {
         limelight.pipelineSwitch(6);
         //result.getPipeLineIndex()
 
-        Servo leftServo = hardwareMap.get(Servo.class, "left servo");
-        Servo rightServo = hardwareMap.get(Servo.class, "right servo");
-        DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
+        //Servo leftServo = hardwareMap.get(Servo.class, "left servo");
+        //Servo rightServo = hardwareMap.get(Servo.class, "right servo");
+        //DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
 
         //leftServo.setPosition(0);
     }
