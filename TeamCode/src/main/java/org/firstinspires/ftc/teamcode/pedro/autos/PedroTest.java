@@ -81,7 +81,7 @@ public class PedroTest extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-        limelight.pipelineSwitch(6);
+        limelight.pipelineSwitch(0);
         //result.getPipeLineIndex()
 
         //Servo leftServo = hardwareMap.get(Servo.class, "left servo");
