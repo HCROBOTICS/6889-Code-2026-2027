@@ -65,7 +65,7 @@ public class PedroTest extends OpMode {
     }
 
     private Path path1rDone() {
-        return curve(path1r, controlPose1, path1rDone).constant(path1rDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+        return curve(path1r, controlPose1, path1rDone).linear(path1r, path1rDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
 
     private boolean hasAnyTag(int... tagIds) {
