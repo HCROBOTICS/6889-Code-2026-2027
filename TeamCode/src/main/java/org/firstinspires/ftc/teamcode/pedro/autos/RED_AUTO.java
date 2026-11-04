@@ -5,12 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.pedropathing.follower.Follower;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
@@ -29,13 +24,10 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.hardware.limelightvision.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Autonomous
-public class PedroTest extends OpMode {
+public class RED_AUTO extends OpMode {
     private Follower follower;
     Limelight3A limelight;
     ArrayList<Integer> tags = new ArrayList<>();
