@@ -27,46 +27,56 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import com.qualcomm.hardware.limelightvision.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Autonomous
 public class PedroTest extends OpMode {
     private Follower follower;
     Limelight3A limelight;
+    ArrayList<Integer> tags = new ArrayList<>();
     private final PoseFactory p = PoseFactory.degrees(); // (X, Y, heading in deg.)
 
     private final Pose startPose = p.of(8, 24, 180);
-    private final Pose path1 = p.of(61.07, 24, 180);
-    private final Pose path2 = p.of(10, 10, 180);
-    private final Pose path3 = p.of(8, 10, 180);
-    private final Pose path4 = p.of(54.87, 24.00, 90);
+    private final Pose checkPath1 = p.of(58.82, 39.05, 90);
+    private final Pose path1r = p.of(58.82, 24.00, 90);
+    private final Pose path1l = p.of(58.82, 122.90, -90);
+    private final Pose path1lDone = p.of(12.37, 106.83, 180);
+    private final Pose path1rDone = p.of(12.37, 106.83, 180); //curve with ctrlPose1
 
-    private final Pose controlPose1 = p.of(58.69591527987897, 8.888048411497719, 0);
+    private final Pose controlPose1 = p.of(13.72919818456884, 26.615733736762472, 0);
 
 
-    private Path path1() {
-        return line(startPose, path1).linear(startPose,path1).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+    private Path checkPath() {
+        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
-    private Path path2() {
-        return curve(path1, controlPose1, path2).linear(path1, path2).with(Constants.foresightConfig.maxPathSpeed.at(0.5));
+    private Path path1r() {
+        return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.5));
     }
-    private Path path3() {
-        return line(path2, path3).linear(path2, path3).with(Constants.foresightConfig.maxPathSpeed.at(0.4));
+    private Path path1l() {
+        return line(checkPath1, path1l).linear(checkPath1, path1l).with(Constants.foresightConfig.maxPathSpeed.at(0.5));
     }
-    private Path path4() {
-        return line(path3, path4).linear(path3, path4).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+    private Path path1lDone() {
+        return line(path1l, path1lDone).linear(path1l, path1lDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+    }
+
+    private Path path1rDone() {
+        return curve(path1r, controlPose1, path1rDone).linear(path1r, path1rDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
 
     private Command autoRoutine() {
         return sequential(
-                follow(follower, path1()),
+                follow(follower, checkPath()),
                 waitMs(200),
-                // Add mechanisms here.
-                follow(follower, path2()),
-                waitMs(3000),
-                follow(follower, path3()),
-                waitMs(1000),
-                follow(follower, path4())
+                //if tag is 34, 35, 36, or 37, run path1r
+                follow(follower, path1r()),
+                //waitMs(3000),
+                //if tag is 30, 31, 32, or 33, run path1l
+                follow(follower, path1l())
+                //then after paths done, run path1lDone after path1l and path1rDone after path1r
         );
     }
 
@@ -81,7 +91,7 @@ public class PedroTest extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(0);
         //result.getPipeLineIndex()
 
         //Servo leftServo = hardwareMap.get(Servo.class, "left servo");
@@ -93,18 +103,19 @@ public class PedroTest extends OpMode {
 
     @Override
     public void start() {
-        //schedule(autoRoutine());        //uncomment this if not testing limelight
+        schedule(autoRoutine());        //uncomment this if not testing limelight
     }
 
     @Override
     public void loop() {
-        //follower.update();              //uncomment this if not testing limelight
+        follower.update();              //uncomment this if not testing limelight
 
         LLResult result = limelight.getLatestResult();
 
         telemetry.addData("Limelight Connected", limelight.isConnected());
 
         if (result != null && result.isValid()) {
+            tags.clear();
 
             telemetry.addData("Pipeline", result.getPipelineIndex());
 
@@ -128,6 +139,9 @@ public class PedroTest extends OpMode {
                         "Target Y",
                         fiducial.getTargetYDegrees()
                 );
+
+
+                tags.add(fiducial.getFiducialId());
             }
 
         } else {
