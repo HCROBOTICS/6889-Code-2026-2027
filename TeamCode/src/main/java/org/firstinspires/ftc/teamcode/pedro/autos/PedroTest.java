@@ -45,7 +45,7 @@ public class PedroTest extends OpMode {
     private final Pose checkPath1 = p.of(58.82, 39.05, 90);
     private final Pose path1r = p.of(58.82, 24.00, 90);
     private final Pose path1l = p.of(58.82, 122.90, -90);
-    private final Pose path1lDone = p.of(12.37, 106.83, 180);
+    private final Pose path1lDone = p.of(12.37, 106.83, -180);
     private final Pose path1rDone = p.of(12.37, 106.83, 180); //curve with ctrlPose1
 
     private final Pose controlPose1 = p.of(13.72919818456884, 26.615733736762472, 0);
@@ -58,10 +58,10 @@ public class PedroTest extends OpMode {
         return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
     private Path path1l() {
-        return line(checkPath1, path1l).linear(checkPath1, path1l).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+        return line(checkPath1, path1l).constant(path1l).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
     private Path path1lDone() {
-        return line(path1l, path1lDone).linear(path1l, path1lDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+        return line(path1l, path1lDone).constant(path1lDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
 
     private Path path1rDone() {
