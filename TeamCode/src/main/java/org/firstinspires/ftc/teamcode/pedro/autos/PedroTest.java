@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Autonomous
 public class PedroTest extends OpMode {
     private Follower follower;
