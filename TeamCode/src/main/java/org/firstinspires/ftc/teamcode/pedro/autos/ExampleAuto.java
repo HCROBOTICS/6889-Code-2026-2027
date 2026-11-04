@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedro.autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.pedropathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
@@ -18,6 +19,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 
 @Autonomous
+@Disabled
 public class ExampleAuto extends OpMode {
     private Follower follower;
     private final PoseFactory p = PoseFactory.degrees(); // (X, Y, heading in deg.)
