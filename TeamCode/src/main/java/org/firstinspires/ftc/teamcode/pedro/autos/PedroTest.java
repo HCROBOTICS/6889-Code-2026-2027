@@ -21,6 +21,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Scheduler;
 
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.conditional;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
@@ -54,10 +55,10 @@ public class PedroTest extends OpMode {
         return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
     private Path path1r() {
-        return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.5));
+        return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
     private Path path1l() {
-        return line(checkPath1, path1l).linear(checkPath1, path1l).with(Constants.foresightConfig.maxPathSpeed.at(0.5));
+        return line(checkPath1, path1l).linear(checkPath1, path1l).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
     private Path path1lDone() {
         return line(path1l, path1lDone).linear(path1l, path1lDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
@@ -67,16 +68,41 @@ public class PedroTest extends OpMode {
         return curve(path1r, controlPose1, path1rDone).linear(path1r, path1rDone).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
 
+    private boolean hasAnyTag(int... tagIds) {
+        for (int tagId : tagIds) {
+            if (tags.contains(tagId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Command autoRoutine() {
         return sequential(
+                // Drive to AprilTag checking position
                 follow(follower, checkPath()),
+
                 waitMs(200),
-                //if tag is 34, 35, 36, or 37, run path1r
-                follow(follower, path1r()),
-                //waitMs(3000),
-                //if tag is 30, 31, 32, or 33, run path1l
-                follow(follower, path1l())
-                //then after paths done, run path1lDone after path1l and path1rDone after path1r
+
+                // If ANY of 34, 35, 36, 37 are detected:
+                //      RIGHT
+                // Otherwise:
+                //      LEFT
+                conditional(
+                        () -> hasAnyTag(34, 35, 36, 37),
+
+                        // RIGHT
+                        sequential(
+                                follow(follower, path1r()),
+                                follow(follower, path1rDone())
+                        ),
+
+                        // LEFT
+                        sequential(
+                                follow(follower, path1l()),
+                                follow(follower, path1lDone())
+                        )
+                )
         );
     }
 
