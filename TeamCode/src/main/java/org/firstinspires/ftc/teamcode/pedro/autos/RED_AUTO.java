@@ -114,7 +114,7 @@ public class RED_AUTO extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(6);
         //result.getPipeLineIndex()
 
 
