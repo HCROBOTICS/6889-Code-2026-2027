@@ -91,12 +91,14 @@ public class RED_AUTO extends OpMode {
                         // RIGHT
                         sequential(
                                 follow(follower, path1r()),
+                                waitMs(400),
                                 follow(follower, path1rDone())
                         ),
 
                         // LEFT
                         sequential(
                                 follow(follower, path1l()),
+                                waitMs(400),
                                 follow(follower, path1lDone())
                         )
                 )
