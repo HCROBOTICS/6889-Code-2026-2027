@@ -33,6 +33,7 @@ public class RED_AUTO extends OpMode {
     private Follower follower;
     private Servo leftServo;
     private Servo rightServo;
+    private DcMotor shooter;
     private DcMotor intake;
     Limelight3A limelight;
     ArrayList<Integer> tags = new ArrayList<>();
@@ -123,6 +124,7 @@ public class RED_AUTO extends OpMode {
         leftServo = hardwareMap.get(Servo.class, "left intake servo");
         rightServo = hardwareMap.get(Servo.class, "right intake servo");
         intake = hardwareMap.get(DcMotor.class, "intake");
+        shooter = hardwareMap.get(DcMotor.class, "shooter");
 
         //leftServo.setPosition(0);
     }
