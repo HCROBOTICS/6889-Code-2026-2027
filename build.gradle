@@ -8,6 +8,15 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        maven {
+            url = "https://mymaven.bylazar.com/releases"
+        }
+        maven {
+            url = "https://repo.dairy.foundation/releases"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10"
     }
 }
 
@@ -23,9 +32,13 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-    }
-}
 
-repositories {
-    mavenCentral()
+        maven {
+            url = "https://mymaven.bylazar.com/releases"
+        }
+
+        maven {
+            url = "https://repo.dairy.foundation/releases"
+        }
+    }
 }

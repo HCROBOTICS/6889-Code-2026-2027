@@ -39,7 +39,7 @@ public class RED_AUTO extends OpMode {
     private final PoseFactory p = PoseFactory.degrees(); // (X, Y, heading in deg.)
 
     private final Pose startPose = p.of(8, 24, 180);
-    private final Pose checkPath1 = p.of(58.82, 39.05, 90);
+    private final Pose checkPath1 = p.of(58.82, 18, 90);
     private final Pose path1r = p.of(58.82, 24.00, 90);
     private final Pose path1l = p.of(58.82, 122.90, -90);
     private final Pose path1lDone = p.of(12.37, 106.83, -180);
