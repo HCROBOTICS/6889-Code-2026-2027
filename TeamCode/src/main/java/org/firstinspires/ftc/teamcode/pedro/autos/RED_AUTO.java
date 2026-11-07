@@ -133,14 +133,22 @@ public class RED_AUTO extends OpMode {
 
     @Override
     public void loop() {
-        follower.update();              //comment this if not using paths
+
+        // Update PedroPathing
+        follower.update();
+
+        // IMPORTANT: Execute the Ivy scheduler every loop!
+        Scheduler.execute();
+
+        // Clear old detections so invalid frames don't leave stale tags
+        tags.clear();
 
         LLResult result = limelight.getLatestResult();
 
         telemetry.addData("Limelight Connected", limelight.isConnected());
+        telemetry.addData("Following Path", follower.following());
 
         if (result != null && result.isValid()) {
-            tags.clear();
 
             telemetry.addData("Pipeline", result.getPipelineIndex());
 
@@ -150,6 +158,7 @@ public class RED_AUTO extends OpMode {
             telemetry.addData("AprilTags Detected", fiducials.size());
 
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
+
                 telemetry.addData(
                         "Tag ID",
                         fiducial.getFiducialId()
@@ -165,13 +174,14 @@ public class RED_AUTO extends OpMode {
                         fiducial.getTargetYDegrees()
                 );
 
-
                 tags.add(fiducial.getFiducialId());
             }
 
         } else {
             telemetry.addLine("No valid Limelight result");
         }
+
+        telemetry.addData("Detected Tag IDs", tags.toString());
 
         telemetry.update();
     }

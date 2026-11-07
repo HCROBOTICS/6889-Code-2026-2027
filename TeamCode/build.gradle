@@ -31,5 +31,8 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+
     implementation "com.bylazar:fullpanels:1.0.20"
+
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 }
