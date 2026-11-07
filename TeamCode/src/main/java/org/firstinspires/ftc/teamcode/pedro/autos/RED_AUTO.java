@@ -22,6 +22,8 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import com.qualcomm.hardware.limelightvision.*;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,9 @@ import java.util.List;
 @Autonomous
 public class RED_AUTO extends OpMode {
     private Follower follower;
+    private Servo leftServo;
+    private Servo rightServo;
+    private DcMotor intake;
     Limelight3A limelight;
     ArrayList<Integer> tags = new ArrayList<>();
     private final PoseFactory p = PoseFactory.degrees(); // (X, Y, heading in deg.)
@@ -112,21 +117,23 @@ public class RED_AUTO extends OpMode {
         limelight.pipelineSwitch(0);
         //result.getPipeLineIndex()
 
-        //Servo leftServo = hardwareMap.get(Servo.class, "left servo");
-        //Servo rightServo = hardwareMap.get(Servo.class, "right servo");
-        //DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
+
+        leftServo = hardwareMap.get(Servo.class, "left intake servo");
+        rightServo = hardwareMap.get(Servo.class, "right intake servo");
+        intake = hardwareMap.get(DcMotor.class, "intake");
 
         //leftServo.setPosition(0);
     }
 
     @Override
     public void start() {
-        schedule(autoRoutine());        //uncomment this if not testing limelight
+        schedule(autoRoutine());        //comment this if not using paths
+        intake.setPower(0);
     }
 
     @Override
     public void loop() {
-        follower.update();              //uncomment this if not testing limelight
+        follower.update();              //comment this if not using paths
 
         LLResult result = limelight.getLatestResult();
 
