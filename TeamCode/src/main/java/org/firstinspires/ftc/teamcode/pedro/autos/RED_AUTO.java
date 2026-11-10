@@ -17,6 +17,7 @@ import com.pedropathing.ivy.Scheduler;
 
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.conditional;
+import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
@@ -33,6 +34,7 @@ public class RED_AUTO extends OpMode {
     private Follower follower;
     private Servo leftServo;
     private Servo rightServo;
+    private Servo motorstopperservo;
     private DcMotor shooter;
     private DcMotor intake;
     Limelight3A limelight;
@@ -92,14 +94,16 @@ public class RED_AUTO extends OpMode {
                         // RIGHT
                         sequential(
                                 follow(follower, path1r()),
-                                waitMs(400),
+                                shoot(),
+                                waitMs(6000),
                                 follow(follower, path1rDone())
                         ),
 
                         // LEFT
                         sequential(
                                 follow(follower, path1l()),
-                                waitMs(400),
+                                shoot(),
+                                waitMs(6000),
                                 follow(follower, path1lDone())
                         )
                 )
@@ -125,7 +129,9 @@ public class RED_AUTO extends OpMode {
         rightServo = hardwareMap.get(Servo.class, "right intake servo");
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+        motorstopperservo = hardwareMap.get(Servo.class, "motor stopper servo");
 
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //leftServo.setPosition(0);
     }
 
@@ -193,5 +199,33 @@ public class RED_AUTO extends OpMode {
     @Override
     public void stop() {
         limelight.stop();
+    }
+
+    private Command shoot() {
+        return sequential(
+                // Start shooter
+                instant(() -> shooter.setPower(-0.55)),
+
+                // Let shooter spin up
+                waitMs(5000),
+
+                // Open the stopper
+                instant(() -> motorstopperservo.setPosition(0.3)),
+
+                // Feed the balls
+                instant(() -> intake.setPower(-0.4)),
+
+                // Keep feeding for 1 second
+                waitMs(1000),
+
+                // Stop feeding
+                instant(() -> intake.setPower(0)),
+
+                // Close stopper
+                instant(() -> motorstopperservo.setPosition(0)),
+
+                // Stop shooter
+                instant(() -> shooter.setPower(0))
+        );
     }
 }
