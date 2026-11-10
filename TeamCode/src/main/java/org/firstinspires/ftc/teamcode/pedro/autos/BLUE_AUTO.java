@@ -94,14 +94,14 @@ public class BLUE_AUTO extends OpMode {
                         // RIGHT
                         sequential(
                                 follow(follower, path1r()),
-                                shoot(),
+                                //shoot(),
                                 follow(follower, path1rDone())
                         ),
 
                         // LEFT
                         sequential(
                                 follow(follower, path1l()),
-                                shoot(),
+                                //shoot(),
                                 follow(follower, path1lDone())
                         )
                 )
