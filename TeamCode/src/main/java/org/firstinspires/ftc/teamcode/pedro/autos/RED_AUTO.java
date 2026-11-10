@@ -52,7 +52,7 @@ public class RED_AUTO extends OpMode {
 
 
     private Path checkPath() {
-        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.2));
     }
     private Path path1r() {
         return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
@@ -95,7 +95,6 @@ public class RED_AUTO extends OpMode {
                         sequential(
                                 follow(follower, path1r()),
                                 shoot(),
-                                waitMs(6000),
                                 follow(follower, path1rDone())
                         ),
 
@@ -103,7 +102,6 @@ public class RED_AUTO extends OpMode {
                         sequential(
                                 follow(follower, path1l()),
                                 shoot(),
-                                waitMs(6000),
                                 follow(follower, path1lDone())
                         )
                 )
