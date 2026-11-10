@@ -1,28 +1,30 @@
 package org.firstinspires.ftc.teamcode.pedro.autos;
 
-import static com.pedropathing.api.Paths.curve;
-import static com.pedropathing.api.Paths.line;
+import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.pedropathing.follower.Follower;
+
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+
+import com.pedropathing.api.PoseFactory;
+import com.pedropathing.math.Pose;
+
+import static com.pedropathing.api.Paths.*;
+import com.pedropathing.paths.Path;
+
+import com.pedropathing.ivy.Scheduler;
+
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.conditional;
+import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
-import com.pedropathing.api.PoseFactory;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.ivy.Command;
-import com.pedropathing.ivy.Scheduler;
-import com.pedropathing.math.Pose;
-import com.pedropathing.paths.Path;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.hardware.limelightvision.*;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class BLUE_AUTO extends OpMode {
     private Follower follower;
     private Servo leftServo;
     private Servo rightServo;
+    private Servo motorstopperservo;
     private DcMotor shooter;
     private DcMotor intake;
     Limelight3A limelight;
@@ -49,7 +52,7 @@ public class BLUE_AUTO extends OpMode {
 
 
     private Path checkPath() {
-        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
+        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.2));
     }
     private Path path1r() {
         return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
@@ -81,7 +84,7 @@ public class BLUE_AUTO extends OpMode {
 
                 waitMs(200),
 
-                // If ANY of ids are detected:
+                // If ANY are detected:
                 //      RIGHT
                 // Otherwise:
                 //      LEFT
@@ -91,14 +94,14 @@ public class BLUE_AUTO extends OpMode {
                         // RIGHT
                         sequential(
                                 follow(follower, path1r()),
-                                waitMs(400),
+                                shoot(),
                                 follow(follower, path1rDone())
                         ),
 
                         // LEFT
                         sequential(
                                 follow(follower, path1l()),
-                                waitMs(400),
+                                shoot(),
                                 follow(follower, path1lDone())
                         )
                 )
@@ -124,7 +127,9 @@ public class BLUE_AUTO extends OpMode {
         rightServo = hardwareMap.get(Servo.class, "right intake servo");
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+        motorstopperservo = hardwareMap.get(Servo.class, "motor stopper servo");
 
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //leftServo.setPosition(0);
     }
 
@@ -192,5 +197,33 @@ public class BLUE_AUTO extends OpMode {
     @Override
     public void stop() {
         limelight.stop();
+    }
+
+    private Command shoot() {
+        return sequential(
+                // Start shooter
+                instant(() -> shooter.setPower(-0.55)),
+
+                // Let shooter spin up
+                waitMs(5000),
+
+                // Open the stopper
+                instant(() -> motorstopperservo.setPosition(0.3)),
+
+                // Feed the balls
+                instant(() -> intake.setPower(-0.4)),
+
+                // Keep feeding for 1 second
+                waitMs(1000),
+
+                // Stop feeding
+                instant(() -> intake.setPower(0)),
+
+                // Close stopper
+                instant(() -> motorstopperservo.setPosition(0)),
+
+                // Stop shooter
+                instant(() -> shooter.setPower(0))
+        );
     }
 }
