@@ -37,22 +37,24 @@ public class BLUE_AUTO extends OpMode {
     private Servo motorstopperservo;
     private DcMotor shooter;
     private DcMotor intake;
+    //int rightStartServo;
+    //int leftStartServo;
     Limelight3A limelight;
     ArrayList<Integer> tags = new ArrayList<>();
     private final PoseFactory p = PoseFactory.degrees(); // (X, Y, heading in deg.)
 
     private final Pose startPose = p.of(8, 24, 180);
-    private final Pose checkPath1 = p.of(58.82, 18, 90);
-    private final Pose path1r = p.of(58.82, 24.00, 90);
+    private final Pose checkPath1 = p.of(58.82, 37.17, 90);
+    private final Pose path1r = p.of(22, 22, 30);
     private final Pose path1l = p.of(58.82, 122.90, -90);
     private final Pose path1lDone = p.of(12.37, 106.83, -180);
-    private final Pose path1rDone = p.of(12.37, 106.83, 180); //curve with ctrlPose1
+    private final Pose path1rDone = p.of(12.37, 90, 180); //curve with ctrlPose1
 
     private final Pose controlPose1 = p.of(13.72919818456884, 26.615733736762472, 0);
 
 
     private Path checkPath() {
-        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.2));
+        return line(startPose, checkPath1).linear(startPose, checkPath1).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
     }
     private Path path1r() {
         return line(checkPath1, path1r).linear(checkPath1, path1r).with(Constants.foresightConfig.maxPathSpeed.at(0.75));
@@ -94,14 +96,14 @@ public class BLUE_AUTO extends OpMode {
                         // RIGHT
                         sequential(
                                 follow(follower, path1r()),
-                                //shoot(),
+                                shoot(),
                                 follow(follower, path1rDone())
                         ),
 
                         // LEFT
                         sequential(
                                 follow(follower, path1l()),
-                                //shoot(),
+                                shoot(),
                                 follow(follower, path1lDone())
                         )
                 )
@@ -130,18 +132,29 @@ public class BLUE_AUTO extends OpMode {
         motorstopperservo = hardwareMap.get(Servo.class, "motor stopper servo");
 
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightServo.setDirection(Servo.Direction.REVERSE);
+
+        //rightStartServo = rightServo.getPosition();
+        //leftStartServo = rightServo.getPosition();
         //leftServo.setPosition(0);
+
+        telemetry.addData("Status:", "Press start");
+        telemetry.update();
+
     }
 
     @Override
     public void start() {
         schedule(autoRoutine());        //comment this if not using paths
         intake.setPower(0);
+        shooter.setPower(-0.3);
     }
 
     @Override
     public void loop() {
 
+        rightServo.setPosition(0.35);
+        leftServo.setPosition(0.175);
         // Update PedroPathing
         follower.update();
 
@@ -202,16 +215,16 @@ public class BLUE_AUTO extends OpMode {
     private Command shoot() {
         return sequential(
                 // Start shooter
-                instant(() -> shooter.setPower(-0.55)),
+                instant(() -> shooter.setPower(-0.75)),
 
                 // Let shooter spin up
-                waitMs(5000),
+                waitMs(2000),
 
                 // Open the stopper
                 instant(() -> motorstopperservo.setPosition(0.3)),
 
                 // Feed the balls
-                instant(() -> intake.setPower(-0.4)),
+                instant(() -> intake.setPower(-0.9)),
 
                 // Keep feeding for 1 second
                 waitMs(1000),
