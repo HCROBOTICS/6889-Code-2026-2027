@@ -45,7 +45,7 @@ public class BLUE_AUTO extends OpMode {
 
     private final Pose startPose = p.of(8, 24, 180);
     private final Pose checkPath1 = p.of(58.82, 37.17, 90);
-    private final Pose path1r = p.of(17, 18, 45);
+    private final Pose path1r = p.of(19, 20, 45);
     private final Pose path1l = p.of(58.82, 122.90, -90);
     private final Pose path1lDone = p.of(12.37, 106.83, -180);
     private final Pose path1rDone = p.of(12.37, 90, 180); //curve with ctrlPose1
