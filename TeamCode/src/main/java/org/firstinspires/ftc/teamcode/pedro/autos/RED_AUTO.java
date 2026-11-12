@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Autonomous
-public class BLUE_AUTO extends OpMode {
+public class RED_AUTO extends OpMode {
     private Follower follower;
     private Servo leftServo;
     private Servo rightServo;
