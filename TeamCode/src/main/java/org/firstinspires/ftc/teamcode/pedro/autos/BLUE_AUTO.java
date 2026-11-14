@@ -86,7 +86,7 @@ public class BLUE_AUTO extends OpMode {
 
                 waitMs(200),
 
-                // If ANY are detected:
+                // If ANY are detected: Red is 34, 35, 36, 37; Blue is 42, 43, 44, 45
                 //      RIGHT
                 // Otherwise:
                 //      LEFT
@@ -121,7 +121,7 @@ public class BLUE_AUTO extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-        limelight.pipelineSwitch(7);
+        limelight.pipelineSwitch(7); //Red is 6, Blue is 7
         //result.getPipeLineIndex()
 
 
