@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedro.teleops;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,7 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
-@TeleOp(name = "26-27 teleop")
+@TeleOp(name = "26-27 teleop (java)")
+@Disabled
 public class _2627teleop extends LinearOpMode {
 
     private DcMotor FL;
